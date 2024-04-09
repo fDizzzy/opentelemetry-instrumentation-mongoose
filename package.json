@@ -1,6 +1,6 @@
 {
-  "name": "@opentelemetry/instrumentation-mongoose",
-  "version": "0.37.0",
+  "name": "@frzzzy/opentelemetry-instrumentation-mongoose",
+  "version": "0.40.0",
   "description": "OpenTelemetry automatic instrumentation package for mongoose",
   "main": "build/src/index.js",
   "types": "build/src/index.d.ts",
@@ -64,5 +64,5 @@
     "@opentelemetry/instrumentation": "^0.50.0",
     "@opentelemetry/semantic-conventions": "^1.0.0"
   },
-  "homepage": "https://github.com/open-telemetry/opentelemetry-js-contrib/tree/main/plugins/node/instrumentation-mongoose#readme"
+  "homepage": "https://github.com/fDizzzy/opentelemetry-instrumentation-mongoose#readme"
 }

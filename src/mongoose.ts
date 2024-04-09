@@ -53,7 +53,25 @@ const contextCaptureFunctions = [
   'findOneAndReplace',
   'findOneAndRemove',
 ];
-
+const modelCaptureFunctions = [
+  'exists',
+  'deleteOne',
+  'deleteMany',
+  'find',
+  'findOne',
+  'estimatedDocumentCount',
+  'countDocuments',
+  'count',
+  'distinct',
+  'where',
+  '$where',
+  'findOneAndUpdate',
+  'findOneAndDelete',
+  'findOneAndReplace',
+  'updateMany',
+  'updateOne',
+  'replaceOne'
+];
 // when mongoose functions are called, we store the original call context
 // and then set it as the parent for the spans created by Query/Aggregate exec()
 // calls. this bypass the unlinked spans issue on thenables await operations.
@@ -64,9 +82,11 @@ export class MongooseInstrumentation extends InstrumentationBase<any> {
 
   constructor(config: MongooseInstrumentationConfig = {}) {
     super(
-      '@opentelemetry/instrumentation-mongoose',
+      '@frzzzy/opentelemetry-instrumentation-mongoose',
       VERSION,
-      Object.assign({}, config)
+      Object.assign({dbStatementSerializer: (operation, payload) =>{
+        return JSON.stringify({operation, payload});
+      }}, config)
     );
   }
 
@@ -77,7 +97,7 @@ export class MongooseInstrumentation extends InstrumentationBase<any> {
   protected init(): InstrumentationModuleDefinition<any> {
     const module = new InstrumentationNodeModuleDefinition<any>(
       'mongoose',
-      ['>=5.9.7 <7'],
+      ['>=8'],
       this.patch.bind(this),
       this.unpatch.bind(this)
     );
@@ -120,6 +140,13 @@ export class MongooseInstrumentation extends InstrumentationBase<any> {
         moduleExports.Query.prototype,
         funcName as any,
         this.patchAndCaptureSpanContext(funcName)
+      );
+    });
+    modelCaptureFunctions.forEach((funcName: string) => {
+      this._wrap(
+        moduleExports.Query,
+        funcName as any,
+        this.patchOnModelMethods(funcName, moduleVersion)
       );
     });
     this._wrap(moduleExports.Model, 'aggregate', this.patchModelAggregate());
@@ -249,8 +276,8 @@ export class MongooseInstrumentation extends InstrumentationBase<any> {
             self._config.dbStatementSerializer(op, serializePayload);
         }
         const span = self._startSpan(
-          this.constructor.collection,
-          this.constructor.modelName,
+          this.collection,
+          this.modelName,
           op,
           attributes
         );
