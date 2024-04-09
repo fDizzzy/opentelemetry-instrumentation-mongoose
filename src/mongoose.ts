@@ -144,7 +144,7 @@ export class MongooseInstrumentation extends InstrumentationBase<any> {
     });
     modelCaptureFunctions.forEach((funcName: string) => {
       this._wrap(
-        moduleExports.Query,
+        moduleExports.Model,
         funcName as any,
         this.patchOnModelMethods(funcName, moduleVersion)
       );
