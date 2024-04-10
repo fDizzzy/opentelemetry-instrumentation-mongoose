@@ -1,6 +1,6 @@
 {
   "name": "@frzzzy/opentelemetry-instrumentation-mongoose",
-  "version": "0.40.1",
+  "version": "0.40.2",
   "description": "OpenTelemetry automatic instrumentation package for mongoose",
   "main": "build/src/index.js",
   "types": "build/src/index.d.ts",

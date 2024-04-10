@@ -85,7 +85,7 @@ export class MongooseInstrumentation extends InstrumentationBase<any> {
       '@frzzzy/opentelemetry-instrumentation-mongoose',
       VERSION,
       Object.assign({dbStatementSerializer: (operation:any, payload:any) =>{
-        return JSON.stringify({operation, payload});
+        return JSON.stringify({operation, condition: payload.condition, updates: payload.updates, fields: payload.fields});
       }}, config)
     );
   }
